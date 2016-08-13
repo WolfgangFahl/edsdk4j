@@ -66,6 +66,7 @@ import edsdk.utils.CanonConstants.EdsTonigEffect;
 import edsdk.utils.CanonConstants.EdsTv;
 import edsdk.utils.CanonConstants.EdsWhiteBalance;
 import edsdk.utils.CanonUtils;
+import edsdk.utils.OsCheck;
 
 /**
  * This class should be the easiest way to use the canon sdk.
@@ -110,6 +111,9 @@ public class CanonCamera implements EdsObjectEventHandler {
 
     public static final Map<String, Integer> options = new LinkedHashMap<String, Integer>();
     public static final String edsdkDllLoc;
+    public static final String edsdkHint;
+    // Libraries needed to forward windows messages
+    private static User32 lib;
 
     static {
         URL url = null;
@@ -132,11 +136,12 @@ public class CanonCamera implements EdsObjectEventHandler {
         }
         if ( url != null ) {
             try {
-            	// handle unc paths (pre java7 :/ )
-            	URI uri = url.toURI(); 
-            	if( uri.getAuthority() != null && uri.getAuthority().length() > 0 ){
-            		uri = new URL("file://" + url.toString().substring(5)).toURI();
-            	}
+                // handle unc paths (pre java7 :/ )
+                URI uri = url.toURI();
+                if ( uri.getAuthority() != null &&
+                     uri.getAuthority().length() > 0 ) {
+                    uri = new URL( "file://" + url.toString().substring( 5 ) ).toURI();
+                }
                 final File file = new File( uri );
                 final String dir = file.getParentFile().getPath();
                 System.setProperty( "jna.library.path", dir );
@@ -153,22 +158,42 @@ public class CanonCamera implements EdsObjectEventHandler {
             arch = System.getProperty( "com.ibm.vm.bitmode" );
         }
 
-        if ( arch != null && arch.endsWith( "64" ) ) {
-            edsdkDllLoc = "EDSDK_64/EDSDK.dll";
-        } else {
-            edsdkDllLoc = "EDSDK/Dll/EDSDK.dll";
+        // let's find the EDSDK native libraries
+        // first we need to determine the operating system being in use
+        OsCheck.OSType ostype = OsCheck.getOperatingSystemType();
+        switch ( ostype ) {
+            case MacOS:
+                // see stackoverflow.com/questions/15695786/how-to-define-paths-to-frameworks-on-a-mac-in-java
+                // make the library available in your home directory e.g. with:
+                // cd $HOME/Library/Frameworks
+                // ln -s /Applications/Canon\ Utilities/EOS\ Utility/EU2/EOS\ Utility\ 2.app/Contents/Frameworks/EDSDK.framework/Versions/Current/EDSDK EDSDK
+                // check the content e.g. with
+                // nm EDSDK 
+                //  
+                String libpath = System.getProperty( "user.home" ) +
+                                 "/Library/Frameworks/";
+                edsdkDllLoc = libpath + "EDSDK";
+                edsdkHint = "EDSDK Dynamic Link Library from " + libpath;
+                break;
+            // Windows will be the default behavior
+            default:
+                edsdkHint = "EDSDK DLL";
+                if ( arch != null && arch.endsWith( "64" ) ) {
+                    edsdkDllLoc = "EDSDK_64/EDSDK.dll";
+                } else {
+                    edsdkDllLoc = "EDSDK/Dll/EDSDK.dll";
+                }
+                lib = User32.INSTANCE;
         }
-        System.err.println( "Java Architecture: " + arch +
-                            " - Using EDSDK DLL: " + CanonCamera.edsdkDllLoc );
+        System.err.println( "Java Architecture: " + arch + " - Using " +
+                            edsdkHint + ": " + CanonCamera.edsdkDllLoc );
     }
 
     // This gives you direct access to the EDSDK
     public static final EdSdkLibrary EDSDK = (EdSdkLibrary) Native.loadLibrary( CanonCamera.edsdkDllLoc, EdSdkLibrary.class, CanonCamera.options );
 
-    // Libraries needed to forward windows messages
-    private static final User32 lib = User32.INSTANCE;
-    static{
-    	System.setProperty( "jna.predictable_field_order","true");
+    static {
+        System.setProperty( "jna.predictable_field_order", "true" );
     }
     //private static final HMODULE hMod = Kernel32.INSTANCE.GetModuleHandle("");
 
@@ -447,10 +472,12 @@ public class CanonCamera implements EdsObjectEventHandler {
 
         while ( !Thread.currentThread().isInterrupted() ) {
             // do we have a new message? 
-            final boolean hasMessage = CanonCamera.lib.PeekMessage( msg, null, 0, 0, 1 ); // peek and remove
-            if ( hasMessage ) {
-                CanonCamera.lib.TranslateMessage( msg );
-                CanonCamera.lib.DispatchMessage( msg );
+            if ( lib != null ) {
+                final boolean hasMessage = CanonCamera.lib.PeekMessage( msg, null, 0, 0, 1 ); // peek and remove
+                if ( hasMessage ) {
+                    CanonCamera.lib.TranslateMessage( msg );
+                    CanonCamera.lib.DispatchMessage( msg );
+                }
             }
 
             // is there a command we're currently working on? 
@@ -515,14 +542,14 @@ public class CanonCamera implements EdsObjectEventHandler {
 
         private boolean connect() {
             EdsError err = EdsError.EDS_ERR_OK;
-            
+
             final EdsCameraListRef.ByReference listRef = new EdsCameraListRef.ByReference();
             final EdsCameraRef.ByReference cameraRef = new EdsCameraRef.ByReference();
-            
+
             try {
                 err = CanonUtils.toEdsError( CanonCamera.EDSDK.EdsGetCameraList( listRef ) );
                 if ( err != EdsError.EDS_ERR_OK ) {
-                    throw new Exception("Camera failed to initialize");
+                    throw new Exception( "Camera failed to initialize" );
                 }
 
                 final NativeLongByReference outRef = new NativeLongByReference();
@@ -551,12 +578,14 @@ public class CanonCamera implements EdsObjectEventHandler {
                 if ( err != EdsError.EDS_ERR_OK ) {
                     throw new Exception( "Couldn't open camera session" );
                 }
-                
+
                 CanonCamera.this.edsCamera = cameraRef.getValue();
-            } catch (Exception e) {
+            }
+            catch ( Exception e ) {
                 CanonUtils.release( cameraRef );
                 setError( err, e.getMessage() );
-            } finally {
+            }
+            finally {
                 CanonUtils.release( listRef );
             }
 

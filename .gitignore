@@ -6,3 +6,5 @@
 /images
 /lib/src
 /lib/javadoc
+/target/
+/settings
