@@ -41,7 +41,7 @@ import edsdk.utils.CanonUtils;
  */
 public abstract class CanonCommand<T> implements EdsObjectEventHandler {
 
-    public CanonCamera camera;
+    public BaseCanonCamera camera;
     // edsCamera can be reached also through camera.getEdsCamera(), 
     // but it's needed so much that this is a handy shortcut. 
     public EdsCameraRef edsCamera; 
@@ -60,7 +60,7 @@ public abstract class CanonCommand<T> implements EdsObjectEventHandler {
      * 
      * @param camera
      */
-    public void setCamera( final CanonCamera camera ) {
+    public void setCamera( final BaseCanonCamera camera ) {
         this.camera = camera;
         this.edsCamera = camera.getEdsCamera(); 
     }

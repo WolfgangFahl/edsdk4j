@@ -3,7 +3,7 @@
 -mode Directory
 -noMangling
 -runtime JNA
--package edsdk
+-package edsdk.bindings34
 -library EdSdk
 $(EDSDK_HOME)/Header/EDSDKErrors.h
 $(EDSDK_HOME)/Header/EDSDKTypes.h
