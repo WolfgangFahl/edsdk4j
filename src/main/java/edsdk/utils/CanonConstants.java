@@ -2638,7 +2638,8 @@ public class CanonConstants {
         kEdsStorageType_Non( "No memory card" ),
         kEdsStorageType_CF( "Compact Flash" ),
         kEdsStorageType_SD( "SD Flash" ),
-        kEdsStorageType_HD( "Hard Drive" );
+        kEdsStorageType_HD( "Hard Drive" ),
+        kEdsStorageType_CFast( "CFast Compact Flash" );
 
         private final int value;
         private final String description;
@@ -2693,6 +2694,7 @@ public class CanonConstants {
         kEdsWhiteBalance_WhitePaper5( "Manual 5" ),
         kEdsWhiteBalance_PCSet4( "Custom: PC-4" ),
         kEdsWhiteBalance_PCSet5( "Custom: PC-5" ),
+        kEdsWhiteBalance_AwbWhite("AwbWhite"),
         kEdsWhiteBalance_Click( "Click to set" ),
         kEdsWhiteBalance_Pasted( "Copied from image" );
 
@@ -2939,6 +2941,7 @@ public class CanonConstants {
         kEdsPictureStyle_Landscape( "Landscape" ),
         kEdsPictureStyle_Neutral( "Neutral" ),
         kEdsPictureStyle_Faithful( "Faithful" ),
+        kEdsPictureStyle_FineDetail("Fine Detail"),
         kEdsPictureStyle_Monochrome( "Monochrome" ),
         kEdsPictureStyle_Auto( "Auto" ),
         kEdsPictureStyle_User1( "User 1" ),
@@ -3147,7 +3150,9 @@ public class CanonConstants {
  -----------------------------------------------------------------------------*/
     public enum EdsEvfOutputDevice implements DescriptiveEnum<Integer> {
         kEdsEvfOutputDevice_TFT( "Camera" ),
-        kEdsEvfOutputDevice_PC( "Host Computer" );
+        kEdsEvfOutputDevice_PC( "Host Computer" ),
+        kEdsEvfOutputDevice_MOBILE("Mobile"),
+        kEdsEvfOutputDevice_MOBILE2("Mobile 2");
 
         private final int value;
         private final String description;
@@ -3225,7 +3230,8 @@ public class CanonConstants {
     public enum EdsEvfAFMode implements DescriptiveEnum<Integer> {
         Evf_AFMode_Quick( "Quick" ),
         Evf_AFMode_Live( "Live" ),
-        Evf_AFMode_LiveFace( "Live Face" );
+        Evf_AFMode_LiveFace( "Live Face" ),
+        Evf_AFMode_LiveMulti( "Live Multi" );
 
         private final int value;
         private final String description;
