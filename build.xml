@@ -21,7 +21,7 @@
   
   <property environment="env"/>
   
-  <property name="jnaerator.lib"    value="${lib}/jnaerator-0.11-shaded.jar"/>
+  <property name="jnaerator.lib"    value="${lib}/jnaerator-0.12-shaded.jar"/>
   
   <fileset id="jna.libs" dir="${lib}">
     <include name="jna*.jar"/>
