@@ -181,8 +181,9 @@ public class CanonCamera extends BaseCanonCamera implements EdsObjectEventHandle
         private boolean connect() {
             EdsError err = EdsError.EDS_ERR_OK;
 
-            final EdsCameraListRef.ByReference listRef = new EdsCameraListRef.ByReference();
-            final EdsCameraRef.ByReference cameraRef = new EdsCameraRef.ByReference();
+            final EdsCameraListRef listRef = new EdsCameraListRef();
+            final EdsCameraRef cameraRef = new EdsCameraRef();
+         
 
             try {
                 err = CanonUtils.toEdsError( EDSDK.EdsGetCameraList( listRef ) );

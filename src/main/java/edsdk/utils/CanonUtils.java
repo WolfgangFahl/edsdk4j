@@ -1092,7 +1092,7 @@ public class CanonUtils {
     }
 
     /**
-     * Releases a eds object 
+     * Releases an eds object 
      * @param value
      * @return
      */
