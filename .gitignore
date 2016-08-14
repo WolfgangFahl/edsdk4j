@@ -8,3 +8,5 @@
 /lib/javadoc
 /target/
 .settings
+.DS_Store
+.swp
