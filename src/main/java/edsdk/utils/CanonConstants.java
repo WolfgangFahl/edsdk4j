@@ -1045,12 +1045,14 @@ public class CanonConstants {
         EDS_ERR_INVALID_CODE_FORMAT( "Invalid Code Format" ),
         EDS_ERR_UNKNOWN_VENDOR_CODE( "Unknown Vendor Code" ),
         EDS_ERR_CAPTURE_ALREADY_TERMINATED( "Capture Already Terminated" ),
+        EDS_ERR_PTP_DEVICE_BUSY ("PTP Device Busy"),
         EDS_ERR_INVALID_PARENTOBJECT( "Invalid Parent Object" ),
         EDS_ERR_INVALID_DEVICEPROP_FORMAT( "Invalid Device Property Format" ),
         EDS_ERR_INVALID_DEVICEPROP_VALUE( "Invalid Device Property Value" ),
         EDS_ERR_SESSION_ALREADY_OPEN( "Session Already Open" ),
         EDS_ERR_TRANSACTION_CANCELLED( "Transaction Cancelled" ),
         EDS_ERR_SPECIFICATION_OF_DESTINATION_UNSUPPORTED( "Unsupported Destination Specification" ),
+        EDS_ERR_NOT_CAMERA_SUPPORT_SDK_VERSION("Camera not Supported by this SDK Version"),
 
         /* PTP Vendor */
         EDS_ERR_UNKNOWN_COMMAND( "Unknown Command" ),
@@ -1059,7 +1061,8 @@ public class CanonConstants {
         EDS_ERR_LOW_BATTERY( "Low Battery" ),
         EDS_ERR_OBJECT_NOTREADY( "Live View Image Data Set Not Ready" ),
         EDS_ERR_CANNOT_MAKE_OBJECT( "Cannot Make Object" ),
-
+        EDS_ERR_MEMORYSTATUS_NOTREADY("Memory Status Not Ready"),
+        
         /* Take Picture errors */
         EDS_ERR_TAKE_PICTURE_AF_NG( "Focus Failed" ),
         EDS_ERR_TAKE_PICTURE_RESERVED( "Reserved" ),
@@ -1071,6 +1074,9 @@ public class CanonConstants {
         EDS_ERR_TAKE_PICTURE_CARD_PROTECT_NG( "Card Write Protected" ),
         EDS_ERR_TAKE_PICTURE_MOVIE_CROP_NG( "Cropping Movie" ),
         EDS_ERR_TAKE_PICTURE_STROBO_CHARGE_NG( "Strobe Charging" ),
+        EDS_ERR_TAKE_PICTURE_NO_LENS_NG("No Lens"),
+        EDS_ERR_TAKE_PICTURE_SPECIAL_MOVIE_MODE_NG("Special Movie Mode"),
+        EDS_ERR_TAKE_PICTURE_LV_REL_PROHIBIT_MODE_NG("LV Rel Prohibit Mode"),
 
         EDS_ERR_LAST_GENERIC_ERROR_PLUS_ONE( "Not Used" );
 
@@ -3042,6 +3048,7 @@ public class CanonConstants {
         kEdsAEMode_SceneIntelligentAuto( "Scene Intelligent Auto" ), // in EDSDK 2.11.3 (or earlier), removed EDSDK <= 2.13.2 , avail in 3.4
         kEdsAEMode_NightScenes("Night Scenes"),
         kEdsAEMode_BacklitScenes("Backlit Scenes"),
+        kEdsAEMode_SCN("SCN"),
         kEdsAEMode_Children               ("Children"),
         kEdsAEMode_Food                 ("Food"),
         kEdsAEMode_CandlelightPortraits ("Candle Light Portraits"),
