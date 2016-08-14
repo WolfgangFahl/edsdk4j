@@ -2,6 +2,9 @@ package edsdk.api;
 
 import com.sun.jna.Native;
 import com.sun.jna.Library;
+
+import org.bridj.Platform;
+
 import com.sun.jna.Function;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
@@ -22,8 +25,10 @@ public class CanonCamera34 extends BaseCanonCamera {
         // options.put(Library.OPTION_CALLING_CONVENTION, Function.ALT_CONVENTION);
         options.put(Library.OPTION_CALLING_CONVENTION, Function.C_CONVENTION);
         EDSDK = (EdSdkLibrary) Native.loadLibrary( edsdkDllLoc, EdSdkLibrary.class, options );
-        String javalibpath = System.getProperty("java.library.path");
-        System.out.println(javalibpath);
-        System.load(libpath+"DPP");
+        if (Platform.isMacOSX()) {
+        	String javalibpath = System.getProperty("java.library.path");
+        	System.out.println(javalibpath);
+        	System.load(libpath+"DPP");
+        }
     }
 }

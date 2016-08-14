@@ -3015,6 +3015,10 @@ public class CanonConstants {
 /*-----------------------------------------------------------------------------
  Shooting Mode
  -----------------------------------------------------------------------------*/
+    /**
+     * see page 100 of EDSK_API
+     *
+     */
     public enum EdsAEMode implements DescriptiveEnum<Integer> {
         kEdsAEMode_Program( "Program AE" ),
         kEdsAEMode_Tv( "Shutter-Speed Priority AE" ),
@@ -3035,7 +3039,28 @@ public class CanonConstants {
         kEdsAEMode_CreativeAuto( "Creative Auto" ),
         kEdsAEMode_Movie( "Movie" ),
         kEdsAEMode_PhotoInMovie( "Photo In Movie" ),
-        //kEdsAEMode_SceneIntelligentAuto( "Scene Intelligent Auto" ), // in EDSDK 2.11.3 (or earlier), removed EDSDK <= 2.13.2
+        kEdsAEMode_SceneIntelligentAuto( "Scene Intelligent Auto" ), // in EDSDK 2.11.3 (or earlier), removed EDSDK <= 2.13.2 , avail in 3.4
+        kEdsAEMode_NightScenes("Night Scenes"),
+        kEdsAEMode_BacklitScenes("Backlit Scenes"),
+        kEdsAEMode_Children               ("Children"),
+        kEdsAEMode_Food                 ("Food"),
+        kEdsAEMode_CandlelightPortraits ("Candle Light Portraits"),
+        kEdsAEMode_CreativeFilter   ("Creative Filter"),  
+        kEdsAEMode_RoughMonoChrome  ("Rough Mono Chrome"),  
+        kEdsAEMode_SoftFocus        ("Soft Focus"),  
+        kEdsAEMode_ToyCamera        ("Toy Camera"),  
+        kEdsAEMode_Fisheye          ("Fish Eye"),  
+        kEdsAEMode_WaterColor       ("Water Color"),  
+        kEdsAEMode_Miniature        ("Miniature"),  
+        kEdsAEMode_Hdr_Standard     ("Hdr Standard"),  
+        kEdsAEMode_Hdr_Vivid        ("Hdr Vivid"),  
+        kEdsAEMode_Hdr_Bold         ("Hdr Bold"),  
+        kEdsAEMode_Hdr_Embossed     ("Hdr Embossed"),  
+        kEdsAEMode_Movie_Fantasy    ("Movie Fantasy"),  
+        kEdsAEMode_Movie_Old        ("Movie Old"),  
+        kEdsAEMode_Movie_Memory     ("Movie Memory"),  
+        kEdsAEMode_Movie_DirectMono ("Direct Mono"),  
+        kEdsAEMode_Movie_Mini       ("Movie Mini"),  
         kEdsAEMode_Unknown( "Unknown" );
 
         private final int value;
