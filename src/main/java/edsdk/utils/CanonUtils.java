@@ -13,6 +13,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
+import com.sun.jna.PointerType;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
@@ -1092,22 +1093,32 @@ public class CanonUtils {
     }
 
     /**
-     * Releases an eds object 
-     * @param value
-     * @return
+     * Releases eds objects 
+     * @param objects
      */
-    public static void release( final EdsBaseRef.ByReference ... objects ) {
-        for ( final EdsBaseRef.ByReference obj : objects ) {
+    public static void release( final PointerByReference ... objects ) {
+        for ( final PointerByReference obj : objects ) {
             if ( obj != null ) {
-                CanonUtils.release( obj.getValue() );
+                CanonUtils.release( new EdsBaseRef(obj.getValue()) );
+            }
+        }
+    }
+    
+    /**
+     * Releases eds objects 
+     * @param objects
+     */
+    public static void release( final PointerType ... objects ) {
+        for ( final PointerType obj : objects ) {
+            if ( obj != null ) {
+                CanonUtils.release( new EdsBaseRef(obj.getPointer()) );
             }
         }
     }
 
     /**
-     * Convert a bunch of eds objects 
-     * @param value
-     * @return
+     * release a bunch of eds objects 
+     * @param objects
      */
 
     public static void release( final EdsBaseRef ... objects ) {

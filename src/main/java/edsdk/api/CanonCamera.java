@@ -7,12 +7,15 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinUser.MSG;
 import com.sun.jna.ptr.NativeLongByReference;
+import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
 import edsdk.bindings.EdSdkLibrary;
+import edsdk.bindings.EdSdkLibrary.EdsBaseRef;
 import edsdk.bindings.EdSdkLibrary.EdsCameraListRef;
 import edsdk.bindings.EdSdkLibrary.EdsCameraRef;
 import edsdk.bindings.EdSdkLibrary.EdsObjectEventHandler;
+import edsdk.bindings.EdSdkLibrary.EdsVoid;
 import edsdk.utils.CanonConstants.EdsError;
 import edsdk.utils.CanonConstants.EdsObjectEvent;
 import edsdk.utils.CanonUtils;
@@ -171,28 +174,36 @@ public class CanonCamera extends BaseCanonCamera implements EdsObjectEventHandle
         System.out.println( "EDSDK Dispatcher thread says bye!" );
     }
 
-    class OpenSessionCommand extends CanonCommand<Boolean> {
+    /**
+     * command to open a session
+     */
+    public class OpenSessionCommand extends CanonCommand<Boolean> {
 
         @Override
         public void run() {
             setResult( connect() );
         }
 
+        /**
+         * connect  to the camera
+         * @return the status of the connection
+         */
         private boolean connect() {
             EdsError err = EdsError.EDS_ERR_OK;
 
-            final EdsCameraListRef listRef = new EdsCameraListRef();
-            final EdsCameraRef cameraRef = new EdsCameraRef();
+            final PointerByReference listRefPtr = new PointerByReference();
+            final PointerByReference cameraRefPtr = new PointerByReference();
          
 
             try {
-                err = CanonUtils.toEdsError( EDSDK.EdsGetCameraList( listRef ) );
+                err = CanonUtils.toEdsError( EDSDK.EdsGetCameraList( listRefPtr ) );
                 if ( err != EdsError.EDS_ERR_OK ) {
                     throw new Exception( "Camera failed to initialize" );
                 }
+                final EdsCameraListRef listRef = new EdsCameraListRef(listRefPtr.getPointer());
 
                 final NativeLongByReference outRef = new NativeLongByReference();
-                err = CanonUtils.toEdsError( EDSDK.EdsGetChildCount( listRef.getValue(), outRef ) );
+                err = CanonUtils.toEdsError( EDSDK.EdsGetChildCount( listRefPtr.getPointer(), outRef ) );
                 if ( err != EdsError.EDS_ERR_OK ) {
                     throw new Exception( "Number of attached cameras couldn't be read" );
                 }
@@ -203,29 +214,30 @@ public class CanonCamera extends BaseCanonCamera implements EdsObjectEventHandle
                     throw new Exception( "No cameras found. Have you tried turning it off and on again?" );
                 }
 
-                err = CanonUtils.toEdsError( EDSDK.EdsGetChildAtIndex( listRef.getValue(), new NativeLong( 0 ), cameraRef ) );
+                err = CanonUtils.toEdsError( EDSDK.EdsGetChildAtIndex( listRef, new NativeLong( 0 ), cameraRefPtr ) );
                 if ( err != EdsError.EDS_ERR_OK ) {
                     throw new Exception( "Access to camera failed" );
                 }
+                final EdsCameraRef cameraRef=new EdsCameraRef(cameraRefPtr.getPointer());
 
-                err = CanonUtils.toEdsError( EDSDK.EdsSetObjectEventHandler( cameraRef.getValue(), new NativeLong( EdsObjectEvent.kEdsObjectEvent_All.value() ), this, new Pointer( 0 ) ) );
+                err = CanonUtils.toEdsError( EDSDK.EdsSetObjectEventHandler( cameraRef, new NativeLong( EdsObjectEvent.kEdsObjectEvent_All.value() ), this, new EdsVoid(null) ) );
                 if ( err != EdsError.EDS_ERR_OK ) {
                     throw new Exception( "Callback handler couldn't be added" );
                 }
 
-                err = CanonUtils.toEdsError( EDSDK.EdsOpenSession( cameraRef.getValue() ) );
+                err = CanonUtils.toEdsError( EDSDK.EdsOpenSession( cameraRef ) );
                 if ( err != EdsError.EDS_ERR_OK ) {
                     throw new Exception( "Couldn't open camera session" );
                 }
 
-                this.edsCamera = cameraRef.getValue();
+                this.edsCamera = cameraRef;
             }
             catch ( Exception e ) {
-                CanonUtils.release( cameraRef );
+                CanonUtils.release( cameraRefPtr );
                 setError( err, e.getMessage() );
             }
             finally {
-                CanonUtils.release( listRef );
+                CanonUtils.release( listRefPtr );
             }
 
             return err == EdsError.EDS_ERR_OK;
@@ -253,6 +265,10 @@ public class CanonCamera extends BaseCanonCamera implements EdsObjectEventHandle
         }
     }
 
+    /**
+     * open a session to the camera
+     * @return the status of the attempt
+     */
     public boolean openSession() {
         final Boolean result = executeNow( new OpenSessionCommand() );
         return result != null && result;

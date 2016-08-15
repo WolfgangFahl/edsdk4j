@@ -4307,7 +4307,7 @@ public interface EdSdkLibrary extends StdCallLibrary {
 			super();
 		}
 	};
-	public static class EdsCameraListRef extends PointerType {
+	public static class EdsCameraListRef extends EdsBaseRef {
 		public EdsCameraListRef(Pointer address) {
 			super(address);
 		}
@@ -4355,7 +4355,7 @@ public interface EdSdkLibrary extends StdCallLibrary {
 			super();
 		}
 	};
-	public static class EdsCameraRef extends PointerType {
+	public static class EdsCameraRef extends EdsBaseRef {
 		public EdsCameraRef(Pointer address) {
 			super(address);
 		}
